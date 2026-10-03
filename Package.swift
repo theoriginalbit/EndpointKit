@@ -1,32 +1,37 @@
-// swift-tools-version: 6.4
-// The swift-tools-version declares the minimum version of Swift required to build this package.
-
+// swift-tools-version: 6.0
 import PackageDescription
 
 let package = Package(
-    name: "EndpointKit",
-    products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "EndpointKit",
-            targets: ["EndpointKit"]
-        ),
-    ],
-    targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .target(
-            name: "EndpointKit",
-            swiftSettings: [
-                .enableUpcomingFeature("ApproachableConcurrency"),
-            ],
-        ),
-        .testTarget(
-            name: "EndpointKitTests",
-            dependencies: ["EndpointKit"],
-            swiftSettings: [
-                .enableUpcomingFeature("ApproachableConcurrency"),
-            ],
-        ),
-    ]
+	name: "EndpointKit",
+	platforms: [
+		.macOS(.v13),
+		.iOS(.v16),
+		.tvOS(.v16),
+		.watchOS(.v9),
+		.visionOS(.v1),
+	],
+	products: [
+		.library(
+			name: "EndpointKit",
+			targets: ["EndpointKit"]
+		)
+	],
+	targets: [
+		.target(
+			name: "EndpointKit",
+		),
+		.testTarget(
+			name: "EndpointKitTests",
+			dependencies: ["EndpointKit"],
+		),
+	]
 )
+
+for target in package.targets where target.type != .plugin {
+	var settings = target.swiftSettings ?? []
+	settings.append(contentsOf: [
+		.swiftLanguageMode(.v6),
+		.enableUpcomingFeature("ApproachableConcurrency"),
+	])
+	target.swiftSettings = settings
+}
